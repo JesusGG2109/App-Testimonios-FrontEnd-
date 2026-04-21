@@ -1,121 +1,106 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState, useEffect, useCallback } from "react";
+import testimonios from "./data";
+import Testimonial from "./components/Testimonial";
+import Controls from "./components/Controls";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [index, setIndex] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const [direction, setDirection] = useState("next");
+  const total = testimonios.length;
+
+  const changeTo = useCallback(
+    (newIndex, dir = "next") => {
+      if (animating) return;
+      setDirection(dir);
+      setAnimating(true);
+      setTimeout(() => {
+        setIndex(newIndex);
+        setAnimating(false);
+      }, 350);
+    },
+    [animating]
+  );
+
+  const next = useCallback(() => {
+    changeTo((index + 1) % total, "next");
+  }, [index, total, changeTo]);
+
+  const prev = useCallback(() => {
+    changeTo((index - 1 + total) % total, "prev");
+  }, [index, total, changeTo]);
+
+  const random = useCallback(() => {
+    let r = Math.floor(Math.random() * total);
+    if (r === index) r = (r + 1) % total;
+    changeTo(r, "next");
+  }, [index, total, changeTo]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      next();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [next]);
+
+  const [theme, setTheme] = useState(() => {
+  return localStorage.getItem("theme") || "dark";
+});
+
+useEffect(() => {
+  document.body.className = theme;
+  localStorage.setItem("theme", theme);
+}, [theme]);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="scene">
+      {/* Blobs animados de fondo */}
+      <div className="blob blob-1" />
+      <div className="blob blob-2" />
+      <div className="blob blob-3" />
+      <div className="blob blob-4" />
+
+      <div className="glass-card">
+        <div className="card-header">
+  <button 
+    className="theme-toggle"
+    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+  >
+    {theme === "dark" ? "☀️" : "🌙"}
+  </button>
+
+  <span className="chip">✦ Testimonios</span>
+
+  <h1 className="headline">
+    Lo que dicen<br />nuestros clientes
+  </h1>
+</div>
+
+        <div
+          className={`testimonial-wrapper ${
+            animating ? `exit-${direction}` : `enter-${direction}`
+          }`}
+        >
+          <Testimonial item={testimonios[index]} />
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+
+        <div className="card-footer">
+          <Controls prev={prev} next={next} random={random} />
+          <div className="counter">
+            {Array.from({ length: total }).map((_, i) => (
+              <span
+                key={i}
+                className={`dot ${i === index ? "dot-active" : ""}`}
+                onClick={() => changeTo(i, i > index ? "next" : "prev")}
+              />
+            ))}
+          </div>
+          <p className="auto-note">
+            <span className="pulse-dot" /> Cambia cada 5 seg
           </p>
         </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      </div>
+    </div>
+  );
 }
-
-export default App

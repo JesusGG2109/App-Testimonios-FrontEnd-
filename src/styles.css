@@ -1,0 +1,101 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at top, #2c2f48, #1e1e2f);
+  min-height: 100vh;
+  color: white;
+}
+
+.app {
+  width: 100%;
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 30px 20px;
+  border-radius: 20px;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 25px;
+  line-height: 1.2;
+}
+
+.card {
+  background: #2c2f33;
+  border-radius: 16px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  transition: 0.3s;
+  width: 100%;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.card img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.card h3 {
+  margin: 10px 0 5px;
+}
+
+.card h4 {
+  margin: 0;
+  font-weight: normal;
+  color: #bbb;
+}
+
+.card p {
+  margin-top: 15px;
+  font-style: italic;
+}
+
+.controls {
+  margin-top: 20px;
+  text-align: center;
+}
+
+button {
+  background: #0d6efd;
+  border: none;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0b5ed7;
+}
+
+.counter {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.auto {
+  font-size: 12px;
+  color: #aaa;
+}
+
+@media (max-width: 600px) {
+  .app {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+}
